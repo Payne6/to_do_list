@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+ <head> 
+    <meta charset="UTF-8"> 
+    <title>To-Do List</title> 
+     
+    <style>
+        
+        #top {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 80%;
+            border-bottom-style: solid;
+            margin-bottom: 10px; 
+            padding: -20px;
+            margin-top: -20px;
+        }
+
+        h1 {
+            font-size: 70px;
+            margin-bottom: 15px;
+        }
+
+        #input {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        #taskInput {
+            width: 300px;
+            line-height: 20px;
+        }
+        
+        button {
+            line-height: 20px;
+        }
+
+        #bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .taskLabel  {
+            font-size: 30px;
+            margin-bottom: 7px;
+            cursor: pointer;
+        }
+        
+    </style>     
+ </head> 
+    
+ <body> 
+     
+    <div id="top"> 
+        <div id="header"> 
+            <h1>Tasks</h1> 
+        </div> 
+        <div id="input"> 
+            <input type="text" id="taskInput" placeholder="Add task here..."> 
+            <button class="button" id="addButton">Add task</button> 
+        </div> 
+        <button class="button" id="clearButton">Clear tasks</button> 
+     </div> 
+  
+    <div id="bottom"> 
+        <div id="taskbox"></div> 
+    </div> 
+     
+    <script>
+        var taskArray = [];
+  
+        document.addEventListener("DOMContentLoaded", function() {
+  
+            const taskInput = document.getElementById("taskInput");
+            const addButton = document.getElementById("addButton");
+            const clearButton = document.getElementById("clearButton");
+            const bottom = document.getElementById("bottom");
+            const taskBox = document.getElementById("taskBox");
+            
+             
+            let retrievedTasks = JSON.parse(window.localStorage.getItem('tasks'));
+            
+            taskArray.slice(0, taskArray.length);
+         
+            //repopulate taskBox with tasks in localStorage
+            for (r of retrievedTasks) {
+                taskArray.push(r);
+               
+                let phoenix = document.createElement("div");
+                phoenix.setAttribute("class", "taskLabel");
+                phoenix.innerText = r.task;
+                
+                phoenix.addEventListener("click", function() {
+                    //go through taskArray, set object corresponding to clicked div to complete
+                    for (t of taskArray) {
+                        if (t.task == this.innerText) {
+                            t.complete = true;
+                        }
+                    }
+                    window.localStorage.setItem('tasks', JSON.stringify(taskArray));
+                    
+                    //if object in taskArray is complete, color corresponding div red, strikethru
+                    let activeTaskList = document.getElementsByClassName("taskLabel");
+                    for (t of taskArray) {
+                        if (t.complete == true) {
+                            for (a of activeTaskList) {
+                                if (a.innerText == t.task) {
+                                    a.style.color = "red";
+                                    a.style.textDecorationLine = "line-through";
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                if (r.complete == true) {
+                    phoenix.style.color = "red";
+                    phoenix.style.textDecorationLine = "line-through";
+                }
+                
+                bottom.appendChild(phoenix);
+            } 
+            
+            
+            addButton.addEventListener("click", function() {
+                //create new task 
+                let taskText = taskInput.value;
+                if (taskText == "") {
+                    alert("You haven't entered a task!");
+                }
+                let newTask = document.createElement("div");
+                newTask.setAttribute("class", "taskLabel");
+                newTask.innerText = taskText;
+                
+                //create taskObject and add to taskArray
+                taskObj = {task: taskText, complete: false};
+                taskArray.push(taskObj);
+                
+                //add new task to taskBox
+                bottom.appendChild(newTask);
+                
+                //add event listener to new task 
+                newTask.addEventListener("click", function() {
+                    //go through taskArray, set object corresponding to clicked div to complete
+                    for (t of taskArray) {
+                        if (t.task == this.innerText) {
+                            t.complete = true;
+                        }
+                    }
+                    //update local storage
+                    window.localStorage.setItem('tasks', JSON.stringify(taskArray));
+                    
+                    //if object in taskArray is complete, color corresponding div red, strikethru
+                    let activeTaskList = document.getElementsByClassName("taskLabel");
+                    for (t of taskArray) {
+                        if (t.complete == true) {
+                            for (a of activeTaskList) {
+                                if (a.innerText == t.task) {
+                                    a.style.color = "red";
+                                    a.style.textDecorationLine = "line-through";
+                                }
+                            }
+                        }
+                    }
+                    
+                })
+                
+                //update local storage
+                window.localStorage.setItem('tasks', JSON.stringify(taskArray));
+                
+                //reset task input
+                taskInput.value = "";
+            }); 
+            
+            
+            
+            clearButton.addEventListener("click", function() {
+                //delete completed tasks from taskBox
+                let activeTaskList = document.getElementsByClassName("taskLabel");
+                for (t of taskArray) {
+                    if (t.complete == true) {
+                        for (a of activeTaskList) {
+                            if (a.innerText == t.task) {
+                                a.remove();
+                            }
+                        }
+                    }
+                }
+            });
+            
+            clearButton.addEventListener("click", function() {
+                //remove tasks marked as complete from taskArray
+                taskArray = taskArray.filter(t => t.complete == false);
+                
+                //and update local storage
+                window.localStorage.setItem('tasks', JSON.stringify(taskArray));
+            });
+
+  
+        })
+         
+    </script>
+  
+    </body>
+</html>
