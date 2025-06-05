@@ -84,7 +84,7 @@
             const addButton = document.getElementById("addButton");
             const clearButton = document.getElementById("clearButton");
             const bottom = document.getElementById("bottom");
-            const taskBox = document.getElementById("taskBox");
+            const taskBox = document.getElementById("taskbox");
             
              
             let retrievedTasks = JSON.parse(window.localStorage.getItem('tasks'));
@@ -92,43 +92,45 @@
             taskArray.slice(0, taskArray.length);
          
             //repopulate taskBox with tasks in localStorage
-            for (r of retrievedTasks) {
-                taskArray.push(r);
-               
-                let phoenix = document.createElement("div");
-                phoenix.setAttribute("class", "taskLabel");
-                phoenix.innerText = r.task;
+            if (retrievedTasks) {
+                for (r of retrievedTasks) {
+                    taskArray.push(r);
                 
-                phoenix.addEventListener("click", function() {
-                    //go through taskArray, set object corresponding to clicked div to complete
-                    for (t of taskArray) {
-                        if (t.task == this.innerText) {
-                            t.complete = true;
-                        }
-                    }
-                    window.localStorage.setItem('tasks', JSON.stringify(taskArray));
+                    let phoenix = document.createElement("div");
+                    phoenix.setAttribute("class", "taskLabel");
+                    phoenix.innerText = r.task;
                     
-                    //if object in taskArray is complete, color corresponding div red, strikethru
-                    let activeTaskList = document.getElementsByClassName("taskLabel");
-                    for (t of taskArray) {
-                        if (t.complete == true) {
-                            for (a of activeTaskList) {
-                                if (a.innerText == t.task) {
-                                    a.style.color = "red";
-                                    a.style.textDecorationLine = "line-through";
+                    phoenix.addEventListener("click", function() {
+                        //go through taskArray, set object corresponding to clicked div to complete
+                        for (t of taskArray) {
+                            if (t.task == this.innerText) {
+                                t.complete = true;
+                            }
+                        }
+                        window.localStorage.setItem('tasks', JSON.stringify(taskArray));
+                        
+                        //if object in taskArray is complete, color corresponding div red, strikethru
+                        let activeTaskList = document.getElementsByClassName("taskLabel");
+                        for (t of taskArray) {
+                            if (t.complete == true) {
+                                for (a of activeTaskList) {
+                                    if (a.innerText == t.task) {
+                                        a.style.color = "red";
+                                        a.style.textDecorationLine = "line-through";
+                                    }
                                 }
                             }
                         }
+                    });
+                    
+                    if (r.complete == true) {
+                        phoenix.style.color = "red";
+                        phoenix.style.textDecorationLine = "line-through";
                     }
-                });
-                
-                if (r.complete == true) {
-                    phoenix.style.color = "red";
-                    phoenix.style.textDecorationLine = "line-through";
-                }
-                
-                bottom.appendChild(phoenix);
-            } 
+                    
+                    bottom.appendChild(phoenix);
+                } 
+            }
             
             
             addButton.addEventListener("click", function() {
