@@ -96,11 +96,11 @@
                 for (r of retrievedTasks) {
                     taskArray.push(r);
                 
-                    let phoenix = document.createElement("div");
-                    phoenix.setAttribute("class", "taskLabel");
-                    phoenix.innerText = r.task;
+                    let restoredTask = document.createElement("div");
+                    restoredTask.setAttribute("class", "taskLabel");
+                    restoredTask.innerText = r.task;
                     
-                    phoenix.addEventListener("click", function() {
+                    restoredTask.addEventListener("click", function() {
                         //go through taskArray, set object corresponding to clicked div to complete
                         for (t of taskArray) {
                             if (t.task == this.innerText) {
@@ -124,11 +124,11 @@
                     });
                     
                     if (r.complete == true) {
-                        phoenix.style.color = "red";
-                        phoenix.style.textDecorationLine = "line-through";
+                        restoredTask.style.color = "red";
+                        restoredTask.style.textDecorationLine = "line-through";
                     }
                     
-                    bottom.appendChild(phoenix);
+                    bottom.appendChild(restoredTask);
                 } 
             }
             
